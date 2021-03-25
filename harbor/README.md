@@ -10,6 +10,11 @@ This template uses http agent to get informations from [Harbor](https://goharbor
     1. Unhealthy Services
     1. Every operations on Harbor (excluding pulling images `PULL_ARTIFACT`)
 
+## Tested version
+
+- Harbor: `2.0.1`
+- Zabbix: `5.0.1`
+
 ## Useage
 
 1. Import Templates: Zabbix Web Page --> [Configuration] --> [Templates] --> [Import] this xml file
