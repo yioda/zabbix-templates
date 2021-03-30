@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.0</version>
-    <date>2021-03-25T06:40:01Z</date>
+    <date>2021-03-30T03:55:30Z</date>
     <groups>
         <group>
             <name>Harbor</name>
@@ -26,7 +26,7 @@
                     <name>System Status Information</name>
                     <type>HTTP_AGENT</type>
                     <key>harbor.allstatus</key>
-                    <delay>5m</delay>
+                    <delay>30s</delay>
                     <trends>0</trends>
                     <value_type>TEXT</value_type>
                     <authtype>BASIC</authtype>
@@ -162,8 +162,8 @@
                     <type>DEPENDENT</type>
                     <key>harbor.status</key>
                     <delay>0</delay>
-                    <trends>0</trends>
-                    <value_type>TEXT</value_type>
+                    <description>1: healthy&#13;
+0: unhealthy</description>
                     <applications>
                         <application>
                             <name>Harbor</name>
@@ -174,13 +174,22 @@
                             <type>JSONPATH</type>
                             <params>$.status</params>
                         </step>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>if(value == &quot;healthy&quot;){
+  return 1;
+} else {
+  return 0;
+}
+</params>
+                        </step>
                     </preprocessing>
                     <master_item>
                         <key>harbor.allstatus</key>
                     </master_item>
                     <triggers>
                         <trigger>
-                            <expression>{last(5m,1)}=&quot;unhealthy&quot;</expression>
+                            <expression>{last(#1,1)}=0</expression>
                             <name>Harbor services is unhealthy</name>
                             <status>DISABLED</status>
                             <priority>AVERAGE</priority>
@@ -192,8 +201,8 @@
                     <type>DEPENDENT</type>
                     <key>harbor.status.core</key>
                     <delay>0</delay>
-                    <trends>0</trends>
-                    <value_type>TEXT</value_type>
+                    <description>1: healthy&#13;
+0: unhealthy</description>
                     <applications>
                         <application>
                             <name>Harbor</name>
@@ -202,7 +211,15 @@
                     <preprocessing>
                         <step>
                             <type>JSONPATH</type>
-                            <params>$.components[?(@.name == 'core')].first()</params>
+                            <params>$.components[?(@.name == 'core')].status.first()</params>
+                        </step>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>if(value == &quot;healthy&quot;){
+  return 1;
+} else {
+  return 0;
+}</params>
                         </step>
                     </preprocessing>
                     <master_item>
@@ -210,7 +227,7 @@
                     </master_item>
                     <triggers>
                         <trigger>
-                            <expression>{str(unhealthy,1)}=1</expression>
+                            <expression>{last(#1,1)}=0</expression>
                             <name>Harbor service: Core is unhealthy</name>
                             <priority>AVERAGE</priority>
                         </trigger>
@@ -221,8 +238,8 @@
                     <type>DEPENDENT</type>
                     <key>harbor.status.database</key>
                     <delay>0</delay>
-                    <trends>0</trends>
-                    <value_type>TEXT</value_type>
+                    <description>1: healthy&#13;
+0: unhealthy</description>
                     <applications>
                         <application>
                             <name>Harbor</name>
@@ -231,7 +248,15 @@
                     <preprocessing>
                         <step>
                             <type>JSONPATH</type>
-                            <params>$.components[?(@.name == 'database')].first()</params>
+                            <params>$.components[?(@.name == 'database')].status.first()</params>
+                        </step>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>if(value == &quot;healthy&quot;){
+  return 1;
+} else {
+  return 0;
+}</params>
                         </step>
                     </preprocessing>
                     <master_item>
@@ -239,7 +264,7 @@
                     </master_item>
                     <triggers>
                         <trigger>
-                            <expression>{str(unhealthy,1)}=1</expression>
+                            <expression>{last(#1,1)}=0</expression>
                             <name>Harbor service: Database is unhealthy</name>
                             <priority>AVERAGE</priority>
                         </trigger>
@@ -250,8 +275,8 @@
                     <type>DEPENDENT</type>
                     <key>harbor.status.jobservice</key>
                     <delay>0</delay>
-                    <trends>0</trends>
-                    <value_type>TEXT</value_type>
+                    <description>1: healthy&#13;
+0: unhealthy</description>
                     <applications>
                         <application>
                             <name>Harbor</name>
@@ -260,7 +285,15 @@
                     <preprocessing>
                         <step>
                             <type>JSONPATH</type>
-                            <params>$.components[?(@.name == 'jobservice')].first()</params>
+                            <params>$.components[?(@.name == 'jobservice')].status.first()</params>
+                        </step>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>if(value == &quot;healthy&quot;){
+  return 1;
+} else {
+  return 0;
+}</params>
                         </step>
                     </preprocessing>
                     <master_item>
@@ -268,7 +301,7 @@
                     </master_item>
                     <triggers>
                         <trigger>
-                            <expression>{str(unhealthy,1)}=1</expression>
+                            <expression>{last(#1,1)}=0</expression>
                             <name>Harbor service: Jobservice is unhealthy</name>
                             <priority>AVERAGE</priority>
                         </trigger>
@@ -279,8 +312,8 @@
                     <type>DEPENDENT</type>
                     <key>harbor.status.notary</key>
                     <delay>0</delay>
-                    <trends>0</trends>
-                    <value_type>TEXT</value_type>
+                    <description>1: healthy&#13;
+0: unhealthy</description>
                     <applications>
                         <application>
                             <name>Harbor</name>
@@ -289,7 +322,15 @@
                     <preprocessing>
                         <step>
                             <type>JSONPATH</type>
-                            <params>$.components[?(@.name == 'notary')].first()</params>
+                            <params>$.components[?(@.name == 'notary')].status.first()</params>
+                        </step>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>if(value == &quot;healthy&quot;){
+  return 1;
+} else {
+  return 0;
+}</params>
                         </step>
                     </preprocessing>
                     <master_item>
@@ -301,8 +342,8 @@
                     <type>DEPENDENT</type>
                     <key>harbor.status.portal</key>
                     <delay>0</delay>
-                    <trends>0</trends>
-                    <value_type>TEXT</value_type>
+                    <description>1: healthy&#13;
+0: unhealthy</description>
                     <applications>
                         <application>
                             <name>Harbor</name>
@@ -311,7 +352,15 @@
                     <preprocessing>
                         <step>
                             <type>JSONPATH</type>
-                            <params>$.components[?(@.name == 'portal')].first()</params>
+                            <params>$.components[?(@.name == 'portal')].status.first()</params>
+                        </step>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>if(value == &quot;healthy&quot;){
+  return 1;
+} else {
+  return 0;
+}</params>
                         </step>
                     </preprocessing>
                     <master_item>
@@ -319,7 +368,7 @@
                     </master_item>
                     <triggers>
                         <trigger>
-                            <expression>{str(unhealthy,1)}=1</expression>
+                            <expression>{last(#1,1)}=0</expression>
                             <name>Harbor service: Portal is unhealthy</name>
                             <priority>AVERAGE</priority>
                         </trigger>
@@ -330,8 +379,8 @@
                     <type>DEPENDENT</type>
                     <key>harbor.status.redis</key>
                     <delay>0</delay>
-                    <trends>0</trends>
-                    <value_type>TEXT</value_type>
+                    <description>1: healthy&#13;
+0: unhealthy</description>
                     <applications>
                         <application>
                             <name>Harbor</name>
@@ -340,7 +389,15 @@
                     <preprocessing>
                         <step>
                             <type>JSONPATH</type>
-                            <params>$.components[?(@.name == 'redis')].first()</params>
+                            <params>$.components[?(@.name == 'redis')].status.first()</params>
+                        </step>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>if(value == &quot;healthy&quot;){
+  return 1;
+} else {
+  return 0;
+}</params>
                         </step>
                     </preprocessing>
                     <master_item>
@@ -348,7 +405,7 @@
                     </master_item>
                     <triggers>
                         <trigger>
-                            <expression>{str(unhealthy,1)}=1</expression>
+                            <expression>{last(#1,1)}=0</expression>
                             <name>Harbor service: Redis is unhealthy</name>
                             <priority>AVERAGE</priority>
                         </trigger>
@@ -359,8 +416,8 @@
                     <type>DEPENDENT</type>
                     <key>harbor.status.registry</key>
                     <delay>0</delay>
-                    <trends>0</trends>
-                    <value_type>TEXT</value_type>
+                    <description>1: healthy&#13;
+0: unhealthy</description>
                     <applications>
                         <application>
                             <name>Harbor</name>
@@ -369,7 +426,15 @@
                     <preprocessing>
                         <step>
                             <type>JSONPATH</type>
-                            <params>$.components[?(@.name == 'registry')].first()</params>
+                            <params>$.components[?(@.name == 'registry')].status.first()</params>
+                        </step>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>if(value == &quot;healthy&quot;){
+  return 1;
+} else {
+  return 0;
+}</params>
                         </step>
                     </preprocessing>
                     <master_item>
@@ -377,7 +442,7 @@
                     </master_item>
                     <triggers>
                         <trigger>
-                            <expression>{str(unhealthy,1)}=1</expression>
+                            <expression>{last(#1,1)}=0</expression>
                             <name>Harbor service: Registry is unhealthy</name>
                             <priority>AVERAGE</priority>
                         </trigger>
@@ -388,8 +453,8 @@
                     <type>DEPENDENT</type>
                     <key>harbor.status.registryctl</key>
                     <delay>0</delay>
-                    <trends>0</trends>
-                    <value_type>TEXT</value_type>
+                    <description>1: healthy&#13;
+0: unhealthy</description>
                     <applications>
                         <application>
                             <name>Harbor</name>
@@ -398,7 +463,15 @@
                     <preprocessing>
                         <step>
                             <type>JSONPATH</type>
-                            <params>$.components[?(@.name == 'registryctl')].first()</params>
+                            <params>$.components[?(@.name == 'registryctl')].status.first()</params>
+                        </step>
+                        <step>
+                            <type>JAVASCRIPT</type>
+                            <params>if(value == &quot;healthy&quot;){
+  return 1;
+} else {
+  return 0;
+}</params>
                         </step>
                     </preprocessing>
                     <master_item>
@@ -406,7 +479,7 @@
                     </master_item>
                     <triggers>
                         <trigger>
-                            <expression>{str(unhealthy,1)}=1</expression>
+                            <expression>{last(#1,1)}=0</expression>
                             <name>Harbor service: RegistryCtl is unhealthy</name>
                             <priority>AVERAGE</priority>
                         </trigger>
@@ -748,7 +821,7 @@
     </templates>
     <triggers>
         <trigger>
-            <expression>{Harbor:harbor.status.notary.str(unhealthy,1)}=1 and {Harbor:harbor.system.info.with_notary.last()}=&quot;true&quot;</expression>
+            <expression>{Harbor:harbor.status.notary.last(#1,1)}=0 and {Harbor:harbor.system.info.with_notary.last()}=&quot;true&quot;</expression>
             <name>Harbor service: Notary is unhealthy</name>
             <priority>AVERAGE</priority>
         </trigger>
