@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <zabbix_export>
     <version>5.0</version>
-    <date>2021-03-30T05:50:08Z</date>
+    <date>2021-04-08T07:34:29Z</date>
     <groups>
         <group>
             <name>Harbor</name>
@@ -732,6 +732,101 @@
                     </preprocessing>
                     <master_item>
                         <key>harbor.system.info</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>System Volume Information</name>
+                    <type>HTTP_AGENT</type>
+                    <key>harbor.system.info.volume</key>
+                    <delay>30s</delay>
+                    <history>0</history>
+                    <trends>0</trends>
+                    <value_type>TEXT</value_type>
+                    <authtype>BASIC</authtype>
+                    <username>{$HARBOR_USERNAME}</username>
+                    <password>{$HARBOR_PASSWORD}</password>
+                    <applications>
+                        <application>
+                            <name>Harbor</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.body</params>
+                        </step>
+                    </preprocessing>
+                    <url>{$HARBOR_URL}/api/v2.0/systeminfo/volumes</url>
+                    <follow_redirects>NO</follow_redirects>
+                    <output_format>JSON</output_format>
+                    <verify_peer>YES</verify_peer>
+                    <verify_host>YES</verify_host>
+                </item>
+                <item>
+                    <name>Free volume storage size</name>
+                    <type>DEPENDENT</type>
+                    <key>harbor.system.info.volume.storage.free</key>
+                    <delay>0</delay>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>Harbor</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.storage.free</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>harbor.system.info.volume</key>
+                    </master_item>
+                </item>
+                <item>
+                    <name>Free volume storage size (percent)</name>
+                    <type>CALCULATED</type>
+                    <key>harbor.system.info.volume.storage.free.percent</key>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <params>100*last(&quot;harbor.system.info.volume.storage.free&quot;)/last(&quot;harbor.system.info.volume.storage.total&quot;)</params>
+                    <applications>
+                        <application>
+                            <name>Harbor</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}&lt;10</expression>
+                            <name>Free Harbor volume storage size &lt; 10 %</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                        <trigger>
+                            <expression>{last()}&lt;20</expression>
+                            <name>Free Harbor volume storage size &lt; 20 %</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>Total volume storage size</name>
+                    <type>DEPENDENT</type>
+                    <key>harbor.system.info.volume.storage.total</key>
+                    <delay>0</delay>
+                    <units>B</units>
+                    <applications>
+                        <application>
+                            <name>Harbor</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>JSONPATH</type>
+                            <params>$.storage.total</params>
+                        </step>
+                    </preprocessing>
+                    <master_item>
+                        <key>harbor.system.info.volume</key>
                     </master_item>
                 </item>
                 <item>
