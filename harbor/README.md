@@ -6,9 +6,11 @@ This template uses http agent to get informations from [Harbor](https://goharbor
     1. Health of services: Core, Jobservice, Redis, Database, Portal, ..., etc
     1. System information: Version, Regitstry URL, Has CA Root, ..., etc
     1. Statistic: Public/Private Project and Repository count
+    1. Storage usage
 1. Triggers
     1. Unhealthy Services
     1. Every operations on Harbor (excluding pulling images `PULL_ARTIFACT`)
+    1. Insufficient storage size
 
 ## Tested version
 
