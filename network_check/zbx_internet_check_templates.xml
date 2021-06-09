@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2021-06-08T10:17:22Z</date>
+    <groups>
+        <group>
+            <name>Internet Necessary</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Internet Availability Check</template>
+            <name>Internet Availability Check</name>
+            <groups>
+                <group>
+                    <name>Internet Necessary</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Internet Availability Check</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Check internet available to {$INTERNET_CHECK_TARGET_HOST}:{$INTERNET_CHECK_TARGET_PORT}</name>
+                    <key>net.tcp.port[{$INTERNET_CHECK_TARGET_HOST},{$INTERNET_CHECK_TARGET_PORT}]</key>
+                    <delay>5m</delay>
+                    <applications>
+                        <application>
+                            <name>Internet Availability Check</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{last()}=0</expression>
+                            <name>Internet is unreachable</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+            </items>
+            <macros>
+                <macro>
+                    <macro>{$INTERNET_CHECK_TARGET_HOST}</macro>
+                    <value>8.8.8.8</value>
+                    <description>Defualt use 8.8.8.8 as tartget, you might want to change it.</description>
+                </macro>
+                <macro>
+                    <macro>{$INTERNET_CHECK_TARGET_PORT}</macro>
+                    <value>53</value>
+                    <description>Defualt use 53 as tartget, you might want to change it.</description>
+                </macro>
+            </macros>
+        </template>
+    </templates>
+</zabbix_export>
